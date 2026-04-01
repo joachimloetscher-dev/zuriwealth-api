@@ -14,41 +14,26 @@ def run_optimization(req: SimulationRequest, config: Dict) -> SimulationResponse
     current_year = config["meta"]["year"]
     
     if opt_req.personal.permit_type in ["B", "L"] and opt_req.financial.gross_income_primary < 120000:
-        action_plan.append(ActionPlanItem(
-            trigger_age=opt_req.personal.current_age, trigger_year=current_year, category="tax",
-            action_title="File NOV (Tarifkorrektur)", action_description="File a tax return to claim deductions.",
-            financial_impact_chf=0.0
-        ))
+        action_plan.append(ActionPlanItem(trigger_age=opt_req.personal.current_age, trigger_year=current_year, category="tax", action_title="File NOV (Tarifkorrektur)", action_description="File a tax return to claim deductions.", financial_impact_chf=0.0))
 
     if opt_req.real_estate and opt_req.real_estate.is_owner and opt_req.real_estate.amortization_type == "direct":
         opt_req.real_estate.amortization_type = "indirect"
-        action_plan.append(ActionPlanItem(
-            trigger_age=opt_req.personal.current_age, trigger_year=current_year, category="real_estate",
-            action_title="Switch to Indirect Amortization", action_description="Pledge Pillar 3a instead of direct paydown.",
-            financial_impact_chf=1500.0
-        ))
+        action_plan.append(ActionPlanItem(trigger_age=opt_req.personal.current_age, trigger_year=current_year, category="real_estate", action_title="Switch to Indirect Amortization", action_description="Pledge Pillar 3a instead of direct paydown.", financial_impact_chf=1500.0))
 
     safe_buffer = opt_req.financial.monthly_living_expenses * 3
     max_3a = config["meta"]["max_3a_contribution"]
     
     if opt_req.financial.cash_assets > safe_buffer and opt_req.pension.annual_3a_contribution < max_3a:
         opt_req.pension.annual_3a_contribution = max_3a
-        opt_req.financial.cash_assets -= max_3a
-        action_plan.append(ActionPlanItem(
-            trigger_age=opt_req.personal.current_age, trigger_year=current_year, category="tax",
-            action_title="Max out Pillar 3a", action_description=f"Invest CHF {max_3a} into Pillar 3a.",
-            financial_impact_chf=2000.0
-        ))
+        action_plan.append(ActionPlanItem(trigger_age=opt_req.personal.current_age, trigger_year=current_year, category="tax", action_title="Max out Pillar 3a", action_description=f"Invest CHF {max_3a} into Pillar 3a.", financial_impact_chf=2000.0))
+
+    if opt_req.financial.cash_assets > (safe_buffer * 2) and opt_req.pension.bvg_buy_in_potential > 0:
+        opt_req.pension.annual_bvg_buyin = 20000.0
+        action_plan.append(ActionPlanItem(trigger_age=opt_req.personal.current_age, trigger_year=current_year, category="retirement", action_title="Voluntary Pension Buy-in", action_description="Make voluntary BVG buy-ins of up to CHF 20k/year from excess cash.", financial_impact_chf=4500.0))
 
     if opt_req.pension.pillar_3a_accounts_count > 1:
         opt_req.pension.stagger_3a_withdrawals = True
-        action_plan.append(ActionPlanItem(
-            trigger_age=opt_req.personal.target_retirement_age - 2, 
-            trigger_year=current_year + (opt_req.personal.target_retirement_age - 2 - opt_req.personal.current_age),
-            category="retirement", action_title="Staggered 3a Withdrawal", 
-            action_description="Withdraw 3a accounts across different years to break tax progression.",
-            financial_impact_chf=3500.0
-        ))
+        action_plan.append(ActionPlanItem(trigger_age=opt_req.personal.target_retirement_age - 2, trigger_year=current_year + (opt_req.personal.target_retirement_age - 2 - opt_req.personal.current_age), category="retirement", action_title="Staggered 3a Withdrawal", action_description="Withdraw 3a accounts across different years to break tax progression.", financial_impact_chf=3500.0))
 
     # 3. Run Optimized Simulation
     timeline_opt, tax_opt = simulation.run_simulation(opt_req, config)
@@ -69,14 +54,10 @@ def run_optimization(req: SimulationRequest, config: Dict) -> SimulationResponse
         pension_gap_monthly=max(0.0, gap),
         tragbarkeit_status=tragbarkeit,
         requires_nov_filing=(opt_req.personal.permit_type in ["B", "L"]),
-        total_tax_saved_lifetime=tax_sq - tax_opt
+        total_tax_saved_lifetime=max(0.0, tax_sq - tax_opt)
     )
 
     # 5. Merge Timelines
-    merged_timeline = [TimeSeriesPoint(
-        age=sq["age"], year=sq["year"],
-        wealth_status_quo=sq["wealth"], wealth_optimized=opt["wealth"],
-        tax_paid_status_quo=sq["tax"], tax_paid_optimized=opt["tax"]
-    ) for sq, opt in zip(timeline_sq, timeline_opt)]
+    merged_timeline = [TimeSeriesPoint(age=sq["age"], year=sq["year"], wealth_status_quo=sq["wealth"], wealth_optimized=opt["wealth"], tax_paid_status_quo=sq["tax"], tax_paid_optimized=opt["tax"]) for sq, opt in zip(timeline_sq, timeline_opt)]
 
     return SimulationResponse(meta_data=meta, time_series=merged_timeline, action_plan=action_plan)
