@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "year": 2024,
+    "canton": "ZH",
+    "municipal_steuerfuss": 1.19,
+    "cantonal_steuerfuss": 1.00,
+    "inflation_rate": 0.015,
+    "max_ahv_pension_single": 29400,
+    "max_ahv_pension_married": 44100,
+    "max_3a_contribution": 7056.0
+  },
+  "income_tax_brackets": {
+    "single": [
+      { "threshold": 0, "base_amount": 0, "marginal_rate": 0.00 },
+      { "threshold": 6900, "base_amount": 0, "marginal_rate": 0.02 },
+      { "threshold": 11700, "base_amount": 96, "marginal_rate": 0.03 },
+      { "threshold": 16500, "base_amount": 240, "marginal_rate": 0.04 },
+      { "threshold": 24200, "base_amount": 548, "marginal_rate": 0.05 },
+      { "threshold": 34400, "base_amount": 1058, "marginal_rate": 0.06 },
+      { "threshold": 47300, "base_amount": 1832, "marginal_rate": 0.07 },
+      { "threshold": 62700, "base_amount": 2910, "marginal_rate": 0.08 },
+      { "threshold": 80800, "base_amount": 4358, "marginal_rate": 0.09 },
+      { "threshold": 101600, "base_amount": 6230, "marginal_rate": 0.10 },
+      { "threshold": 125000, "base_amount": 8570, "marginal_rate": 0.11 },
+      { "threshold": 151100, "base_amount": 11441, "marginal_rate": 0.12 },
+      { "threshold": 180000, "base_amount": 14909, "marginal_rate": 0.13 }
+    ],
+    "married": [
+      { "threshold": 0, "base_amount": 0, "marginal_rate": 0.00 },
+      { "threshold": 13800, "base_amount": 0, "marginal_rate": 0.02 },
+      { "threshold": 19400, "base_amount": 112, "marginal_rate": 0.03 },
+      { "threshold": 25100, "base_amount": 283, "marginal_rate": 0.04 },
+      { "threshold": 32100, "base_amount": 563, "marginal_rate": 0.05 },
+      { "threshold": 40700, "base_amount": 993, "marginal_rate": 0.06 },
+      { "threshold": 50800, "base_amount": 1599, "marginal_rate": 0.07 },
+      { "threshold": 62500, "base_amount": 2418, "marginal_rate": 0.08 },
+      { "threshold": 75700, "base_amount": 3474, "marginal_rate": 0.09 },
+      { "threshold": 90500, "base_amount": 4806, "marginal_rate": 0.10 },
+      { "threshold": 107000, "base_amount": 6456, "marginal_rate": 0.11 },
+      { "threshold": 125000, "base_amount": 8436, "marginal_rate": 0.12 },
+      { "threshold": 144700, "base_amount": 10800, "marginal_rate": 0.13 }
+    ]
+  },
+  "wealth_tax": {
+    "freibetrag_single": 77000,
+    "freibetrag_married": 154000,
+    "brackets": [
+      { "threshold": 0, "rate": 0.0005 },
+      { "threshold": 500000, "rate": 0.0010 },
+      { "threshold": 1000000, "rate": 0.0015 },
+      { "threshold": 2000000, "rate": 0.0020 },
+      { "threshold": 3000000, "rate": 0.0030 }
+    ]
+  },
+  "ahv_early_retirement_brackets": [
+    { "threshold": 0, "contribution": 514.00 },
+    { "threshold": 300000, "contribution": 620.00 },
+    { "threshold": 500000, "contribution": 1030.00 },
+    { "threshold": 1000000, "contribution": 2060.00 },
+    { "threshold": 2000000, "contribution": 4120.00 },
+    { "threshold": 4000000, "contribution": 8240.00 },
+    { "threshold": 8740000, "contribution": 25700.00 }
+  ],
+  "capital_withdrawal_tax_brackets": [
+    { "threshold": 0, "rate": 0.02 },
+    { "threshold": 50000, "rate": 0.03 },
+    { "threshold": 100000, "rate": 0.04 },
+    { "threshold": 250000, "rate": 0.05 },
+    { "threshold": 500000, "rate": 0.06 }
+  ]
+}
